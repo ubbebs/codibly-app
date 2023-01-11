@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { screen, render } from '@testing-library/react'
 import { describe, it } from 'vitest'
 import { renderWithRouter } from '../../../../testProviders'
@@ -15,6 +14,7 @@ describe('TableElem', () => {
     }
     render(renderWithRouter(<TableElem data={data} />, '/'))
     expect(screen.getByText('Product1')).toBeInTheDocument()
+    expect(screen.queryByText('Product2')).toBeNull()
     expect(screen.getByText('1')).toBeInTheDocument()
     expect(screen.getByText('2005')).toBeInTheDocument()
   })

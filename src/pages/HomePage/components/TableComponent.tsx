@@ -45,7 +45,7 @@ export const TableComponent = ({ searchValue }: TableComponentType) => {
               <TableCell>Year</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody data-testid="table-body">
             {filteredData
               .slice(page * 5, page * 5 + 5)
               .map((elem: TableElemType) => (

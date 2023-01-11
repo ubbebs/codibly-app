@@ -8,6 +8,7 @@ export const Product = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const { data } = useFetchQueries()
+
   return (
     <Modal
       sx={{
