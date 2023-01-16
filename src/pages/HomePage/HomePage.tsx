@@ -1,14 +1,10 @@
-import { Typography } from '@mui/material'
 import { InputField } from './components/InputField'
 import { TableComponent } from './components/TableComponent'
-import { useState } from 'react'
-import { useFetchQueries } from '../../services/useFetchQueries'
 import { Outlet } from 'react-router-dom'
+import { useState } from 'react'
 
 export const HomePage = () => {
   const [search, setSearch] = useState('')
-  const { data, isLoading } = useFetchQueries()
-
   const handleSearch = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
@@ -16,12 +12,10 @@ export const HomePage = () => {
     setSearch(e.currentTarget.value)
   }
 
-  if (isLoading) return <Typography variant="h5">Loading...</Typography>
-
   return (
     <>
       <InputField func={handleSearch} />
-      {data && <TableComponent searchValue={search} />}
+      <TableComponent search={search} />
       <Outlet />
     </>
   )

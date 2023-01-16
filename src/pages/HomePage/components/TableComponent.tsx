@@ -8,36 +8,25 @@ import {
   Paper,
   TablePagination,
   Alert,
+  Typography,
 } from '@mui/material'
-import { useState } from 'react'
-import { useFetchQueries } from '../../../services/useFetchQueries'
 import { TableElemType } from '../../../types/TableElemType'
 import { TableElem } from './TableElem'
+import { useTableComponent } from './utils/useTableComponent'
 
 type TableComponentType = {
-  searchValue: string
+  search: string
 }
 
-export const TableComponent = ({ searchValue }: TableComponentType) => {
-  const [page, setPage] = useState(0)
-  const { data } = useFetchQueries()
+export const TableComponent = ({ search }: TableComponentType) => {
+  const { data, isLoading, page, changePage } = useTableComponent(search)
 
-  const handleChangePage = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
-    newpage: number
-  ) => {
-    e?.preventDefault()
-    setPage(newpage)
-  }
-
-  const filteredData = data.data.filter((elem: TableElemType) =>
-    searchValue.length > 0 ? elem.id.toString().includes(searchValue) : elem
-  )
+  if (isLoading) return <Typography variant="h5">Loading...</Typography>
 
   return typeof data !== 'string' ? (
     <Paper>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -46,11 +35,9 @@ export const TableComponent = ({ searchValue }: TableComponentType) => {
             </TableRow>
           </TableHead>
           <TableBody data-testid="table-body">
-            {filteredData
-              .slice(page * 5, page * 5 + 5)
-              .map((elem: TableElemType) => (
-                <TableElem data={elem} key={elem.id} />
-              ))}
+            {[data.data].flat().map((elem: TableElemType) => (
+              <TableElem data={elem} key={elem.id} />
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -58,9 +45,9 @@ export const TableComponent = ({ searchValue }: TableComponentType) => {
         rowsPerPage={5}
         rowsPerPageOptions={[5]}
         component="div"
-        count={filteredData.length}
+        count={data.total || [data.data].flat().length}
         page={page}
-        onPageChange={handleChangePage}
+        onPageChange={changePage}
       />
     </Paper>
   ) : (

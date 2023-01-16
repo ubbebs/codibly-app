@@ -1,13 +1,17 @@
 import { Box, Modal } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useFetchQueries } from '../../services/useFetchQueries'
-import { TableElemType } from '../../types/TableElemType'
+import { useFetchItems } from '../../services/useFetchItem'
 import { ProductData } from './components/ProductData'
 
 export const Product = () => {
   const navigate = useNavigate()
   const { id } = useParams()
-  const { data } = useFetchQueries()
+  const { data, remove, isLoading } = useFetchItems(id)
+
+  const closeModal = () => {
+    remove()
+    navigate(-1)
+  }
 
   return (
     <Modal
@@ -18,7 +22,7 @@ export const Product = () => {
         outline: 'none',
       }}
       open={true}
-      onClose={() => navigate(-1)}
+      onClose={() => closeModal()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -29,11 +33,7 @@ export const Product = () => {
           paddingX: '30px',
         }}
       >
-        {data.data
-          .filter((elem: TableElemType) => elem.id.toString() === id)
-          .map((elem: TableElemType) => {
-            return <ProductData data={elem} key={elem.id} />
-          })}
+        {!isLoading ? <ProductData data={data.data} /> : <p>Loading...</p>}
       </Box>
     </Modal>
   )

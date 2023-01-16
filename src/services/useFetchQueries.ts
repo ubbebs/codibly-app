@@ -1,17 +1,14 @@
 import { useQuery } from 'react-query'
+import { fetcher } from '../utils/fetcher'
 
-export const useFetchQueries = () => {
-  const fetcher = async () => {
-    const res = await fetch(`https://reqres.in/api/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        return data
-      })
-      .catch((err) => {
-        return err.message
-      })
-    console.log(res)
-    return res
-  }
-  return useQuery(['products'], async () => fetcher())
+type UseFetchQueriesType = {
+  page: number
+  id: string
+}
+
+export const useFetchQueries = ({ page, id }: UseFetchQueriesType) => {
+  const query = `per_page=5&page=${page + 1}${
+    id.length > 0 ? `&id=${id}` : null
+  }`
+  return useQuery(['products'], async () => fetcher(query))
 }
